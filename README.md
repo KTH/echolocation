@@ -1,4 +1,4 @@
-# eevo
+# echolocation
 
 **EXPERIMENTAL**. No-install, no-configuration. The glue between Node.js and Docker
 
@@ -29,7 +29,7 @@ We recommend you to **NOT** install this tool locally in your projects
 - **app**. Build the Node.js app in the current directory and create a Docker image from it
 - **node**. Build a custom-made Node.js image
 
-## `npx @kth/eevoo app`. Build the Node.js app in the current directory
+## `npx @kth/echolocation app`. Build the Node.js app in the current directory
 
 ```sh
 npx @kth/echolocation app
@@ -46,5 +46,5 @@ npx @kth/echolocation app
 Builds a custom Node.js 12 Docker image based on `kth-os`
 
 ```sh
-npx @kth/eevo node
+npx @kth/echolocation node
 ```

@@ -50,7 +50,7 @@ function exitAll (err) {
   log.error(err)
   log.log('')
   log.log(
-    'Please open an issue in https://github.com/kth/eevoo/issues/new and attach the information above'
+    'Please open an issue in https://github.com/kth/echolocation/issues/new and attach the information above'
   )
   process.exit(1)
 }

@@ -24,24 +24,28 @@ npm install -g @kth/echolocation
 
 We recommend you to **NOT** install this tool locally in your projects
 
+---
+
 # Commands
 
 - **app**. Build the Node.js app in the current directory and create a Docker image from it
 - **node**. Build a custom-made Node.js image
 
-## `npx @kth/echolocation app`. Build the Node.js app in the current directory
+## 1. `npx @kth/echolocation app`
+
+Build the Node.js app in the current directory
 
 ```sh
 npx @kth/echolocation app
 ```
 
-## Options
+### Options
 
 - `--gen`. Generates `Dockerfile` and `.dockerignore` files in the current directory that was used to build the image.
 
   Note: it overwrites existing files.
 
-### `node`
+### 2. `npx @kth/echolocation node`
 
 Builds a custom Node.js 12 Docker image based on `kth-os`
 

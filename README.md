@@ -28,8 +28,8 @@ We recommend you to **NOT** install this tool locally in your projects
 
 # Commands
 
-- **app**. Build the Node.js app in the current directory and create a Docker image from it
-- **node**. Build a custom-made Node.js image
+1. **app**. Build the Node.js app in the current directory and create a Docker image from it
+2. **node**. Build a custom-made Node.js image
 
 ## 1. `npx @kth/echolocation app`
 
@@ -45,7 +45,7 @@ npx @kth/echolocation app
 
   Note: it overwrites existing files.
 
-### 2. `npx @kth/echolocation node`
+## 2. `npx @kth/echolocation node`
 
 Builds a custom Node.js 12 Docker image based on `kth-os`
 

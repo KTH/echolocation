@@ -33,6 +33,8 @@ We recommend you to **NOT** install this tool locally in your projects
 
 ## 1. `npx @kth/echolocation app`
 
+> Note: your project will be based on a special Node.js image called `kthse/nodejs-echo`. Right now, it is not published and you need to have to generate the image and have it locally. See the command `npx @kth/echolocation node` below to do it.
+
 Build the Node.js app in the current directory
 
 ```sh

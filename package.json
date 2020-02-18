@@ -1,0 +1,33 @@
+{
+  "name": "@kth/echolocation",
+  "version": "0.1.0",
+  "description": "The glue between Node.js and Docker",
+  "main": "index.js",
+  "bin": "index.js",
+  "scripts": {
+    "format": "prettier-standard \"**/*.{js,md,yml,json}\"",
+    "test": "prettier-standard --lint --check \"**/*.{js,md,yml,json}\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@slack/web-api": "^5.7.0",
+    "chalk": "^3.0.0",
+    "ci-info": "^2.0.0",
+    "dotenv": "^8.2.0",
+    "execa": "^4.0.0",
+    "fs-extra": "^8.1.0",
+    "globby": "^11.0.0",
+    "handlebars": "^4.7.3",
+    "ora": "^4.0.3",
+    "pretty-bytes": "^5.3.0",
+    "resolve-cwd": "^3.0.0",
+    "tempy": "^0.4.0",
+    "yargs": "^15.1.0",
+    "yurnalist": "^2.0.0"
+  },
+  "devDependencies": {
+    "prettier-standard": "^16.1.0"
+  }
+}

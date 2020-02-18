@@ -1,0 +1,13 @@
+# This file is inspired on
+# https://nodejs.org/en/docs/guides/nodejs-docker-webapp/
+FROM {{baseImage}}
+RUN apk add --update openssl
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+
+EXPOSE 8080
+CMD [ "node", "." ]

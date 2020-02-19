@@ -179,12 +179,8 @@ async function tagImage (imageId) {
 
 async function generateDockerfile () {
   const version = getNodeVersion()
-  const overwriteDockerfile = fs.existsSync(
-    path.join(process.cwd(), './Dockerfile')
-  )
-  const overwriteDockerignore = fs.existsSync(
-    path.join(process.cwd(), './.dockerignore')
-  )
+  const overwriteDockerfile = fs.existsSync(resolveCwd('./Dockerfile'))
+  const overwriteDockerignore = fs.existsSync(resolveCwd('./.dockerignore'))
 
   const dockerfileProd = compile(
     fs.readFileSync(path.join(__dirname, './app-prod/Dockerfile.handlebars'), {
@@ -195,14 +191,11 @@ async function generateDockerfile () {
   spinner = ora('Generating Dockerfile').start()
 
   await fs.writeFile(
-    path.join(process.cwd(), './Dockerfile'),
+    resolveCwd('./Dockerfile'),
     dockerfileProd({ baseImage: `${BASE_IMAGE}:${version}` })
   )
 
-  await fs.writeFile(path.join(process.cwd(), './.dockerignore'), '')
-
-  await fs.appendFile(resolveCwd('./.dockerignore'), '*.git\n')
-
+  await fs.writeFile(resolveCwd('./.dockerignore'), '*.git\n')
   await fs.appendFile(
     resolveCwd('./.dockerignore'),
     fs.readFileSync(resolveCwd('./.gitignore'), { encoding: 'utf-8' })
@@ -262,7 +255,6 @@ module.exports = {
       console.log()
 
       await showInfo()
-      process.exit(0)
       console.log()
 
       const { imageIdDev, imageIdProd } = await buildImage()

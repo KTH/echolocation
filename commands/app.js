@@ -85,7 +85,8 @@ async function getNodeVersion () {
   const p = require(resolveCwd('./package.json'))
   const version = (p && p.engine && p.engine.node) || '12'
 
-  await log.confirm(`Node.js version required is: ${version}`)
+  await log
+    .confirm(`Node.js version required is: ${version}`)
     .then(correct => {
       if (!correct) {
         log.error('Failed to guess required Node.js version')

@@ -14,6 +14,18 @@ const BASE_IMAGE = 'kthse/nodejs-echo'
 async function identifyType () {
   if (fs.existsSync(resolveCwd('package.json'))) {
     log.verbose('Found package.json in cwd')
+    await log
+      .confirm(
+        'Current directory identified as Node.js project. Is it correct?'
+      )
+      .then(correct => {
+        if (!correct) {
+          log.error('Project is mis-identified as Node.js app')
+          process.exit()
+        }
+      })
+      .catch(exitAll)
+
     log.success('Project identified as Node.js')
 
     return true

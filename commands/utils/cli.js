@@ -1,6 +1,7 @@
 const { isCI } = require('ci-info')
 const chalk = require('chalk')
 const ora = require('ora')
+const yn = require('yn')
 
 function newLog () {
   const options = {
@@ -31,6 +32,27 @@ function newLog () {
 
   return {
     ...base,
+    confirm: msg =>
+      new Promise((accept, reject) => {
+        if (isCI) {
+          reject(
+            new Error(
+              'Asking for confirmation messages is incompatible with CI'
+            )
+          )
+          return
+        }
+
+        const readline = require('readline').createInterface({
+          input: process.stdin,
+          output: process.stdout
+        })
+
+        readline.question(`${msg} [Y/n] `, answer => {
+          readline.close()
+          accept(yn(answer, { default: true }))
+        })
+      }),
     options: {
       set verbose (value) {
         options.verbose = value

@@ -118,7 +118,9 @@ async function runUnitTest (imageId) {
     log.log(err.stderr)
     log.log('')
     log.error('Unit test failed. See results above')
-    log.tip(`Fix the tests by using \`npm test\` (it is probably faster than this tool)`)
+    log.tip(
+      `Fix the tests by using \`npm test\` (it is probably faster than this tool)`
+    )
     log.tip(`Worked? Then try \`docker run ${imageId} npm test\``)
     log.log('')
 
@@ -159,13 +161,16 @@ async function tagImage (imageId) {
   for (const tag of tags) {
     log.tip(`Run the image with \`docker run ${tag} --env-file .env\``)
   }
-
 }
 
 async function generateDockerfile () {
   const version = getNodeVersion()
-  const overwriteDockerfile = fs.existsSync(path.join(process.cwd(), './Dockerfile'))
-  const overwriteDockerignore = fs.existsSync(path.join(process.cwd(), './.dockerignore'))
+  const overwriteDockerfile = fs.existsSync(
+    path.join(process.cwd(), './Dockerfile')
+  )
+  const overwriteDockerignore = fs.existsSync(
+    path.join(process.cwd(), './.dockerignore')
+  )
 
   const dockerfileProd = compile(
     fs.readFileSync(path.join(__dirname, './app-prod/Dockerfile.handlebars'), {
@@ -182,10 +187,7 @@ async function generateDockerfile () {
 
   await fs.writeFile(path.join(process.cwd(), './.dockerignore'), '')
 
-  await fs.appendFile(
-    resolveCwd('./.dockerignore'),
-    '*.git\n'
-  )
+  await fs.appendFile(resolveCwd('./.dockerignore'), '*.git\n')
 
   await fs.appendFile(
     resolveCwd('./.dockerignore'),
@@ -195,15 +197,25 @@ async function generateDockerfile () {
   spinner.stop()
 
   if (overwriteDockerfile) {
-    log.warn(`Overwritten ${chalk.bold('Dockerfile')} with the one used to build the image`)
+    log.warn(
+      `Overwritten ${chalk.bold(
+        'Dockerfile'
+      )} with the one used to build the image`
+    )
   } else {
     log.success(`Generated ${chalk.bold('Dockerfile')} used to build the image`)
   }
 
   if (overwriteDockerignore) {
-    log.warn(`Overwritten ${chalk.bold('.dockerignore')} with the one used to build the image`)
+    log.warn(
+      `Overwritten ${chalk.bold(
+        '.dockerignore'
+      )} with the one used to build the image`
+    )
   } else {
-    log.success(`Generated ${chalk.bold('.dockerignore')} used to build the image`)
+    log.success(
+      `Generated ${chalk.bold('.dockerignore')} used to build the image`
+    )
   }
 
   log.tip(`Reproduce the Docker build yourself: \`docker build .\``)
@@ -213,13 +225,20 @@ module.exports = {
   command: 'app',
   desc: 'Build the Node.js app in the current directory',
   builder: yargs =>
-    yargs.option('gen', {
-      describe: 'Generate Dockerfile and dockerignore files',
-      type: 'boolean'
-    }),
+    yargs
+      .option('gen', {
+        describe: 'Generate Dockerfile and dockerignore files',
+        type: 'boolean'
+      })
+      .option('interactive', {
+        alias: 'i',
+        type: 'boolean',
+        describe: 'Run in interactive mode (ask yes/no on every step)'
+      }),
   async handler (argv) {
     try {
       await showInfo()
+      process.exit(0)
       console.log()
 
       const { imageIdDev, imageIdProd } = await buildImage()

@@ -32,8 +32,12 @@ function newLog () {
 
   return {
     ...base,
-    confirm: msg =>
-      new Promise((accept, reject) => {
+    confirm: msg => {
+      if (!options.interactive) {
+        return Promise.resolve(true)
+      }
+
+      return new Promise((accept, reject) => {
         if (isCI) {
           reject(
             new Error(
@@ -52,7 +56,8 @@ function newLog () {
           readline.close()
           accept(yn(answer, { default: true }))
         })
-      }),
+      })
+    },
     options: {
       set verbose (value) {
         options.verbose = value
@@ -60,12 +65,21 @@ function newLog () {
       },
       get verbose () {
         return options.verbose
+      },
+
+      set interactive (value) {
+        options.interactive = value
+        base.verbose(`Ineractive mode ${value ? 'enabled' : 'disabled'}`)
+      },
+      get interactive () {
+        return options.interactive
       }
     }
   }
 }
 
 const spinners = []
+const log = newLog()
 
 function exit (err) {
   for (const spinner of spinners) {
@@ -111,7 +125,7 @@ function newOra (msg) {
 }
 
 module.exports = {
-  log: newLog(),
+  log,
   exit,
   exitAll,
   ora: newOra

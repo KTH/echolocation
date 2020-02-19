@@ -47,6 +47,10 @@ npx @kth/echolocation app
 
   Note: it overwrites existing files.
 
+- `--interactive`, `-i`. Runs in "interactive" mode, asking everytime if the assumptions taken by echolocation are right or not.
+
+- `--verbose`, `-v`. Logs lots of things
+
 ## 2. `npx @kth/echolocation node`
 
 Builds a custom Node.js 12 Docker image based on `kth-os`

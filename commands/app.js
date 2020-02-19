@@ -11,7 +11,8 @@ const chalk = require('chalk')
 
 const BASE_IMAGE = 'kthse/nodejs-echo'
 
-async function identifyType () {
+/** Guess if `cwd` is a project and therefore can be built */
+async function isProject () {
   if (fs.existsSync(resolveCwd('package.json'))) {
     log.verbose('Found package.json in cwd')
     await log
@@ -21,7 +22,7 @@ async function identifyType () {
       .then(correct => {
         if (!correct) {
           log.error('Project is mis-identified as Node.js app')
-          process.exit()
+          process.exit(1)
         }
       })
       .catch(exitAll)
@@ -35,18 +36,29 @@ async function identifyType () {
   log.error(
     'Current directory is not a Node.js project (no package.json found)'
   )
+  process.exit(1)
 }
 
-async function showInfo () {
-  const spinner = ora('Getting docker version').start()
-  const dockerVersion = await docker.getVersion().catch(exit)
+/** Get the name of the current project  */
+async function getProjectName () {
+  log.verbose('Reading field "name" of package.json')
   const projectName = require(resolveCwd('./package.json')).name
 
-  spinner.stop()
+  await log
+    .confirm(`The name of the project is "${projectName}". Is it correct?`)
+    .then(correct => {
+      if (!correct) {
+        log.error('The name of the project should be in "package.json"')
+        process.exit(1)
+      }
+    })
+    .catch(exitAll)
 
-  log.success('Getting environment information')
-  log.log(`Docker version:     ${dockerVersion}`)
-  log.log(`Project name:       ${projectName} (from package.json)`)
+  log.success(
+    `Obtained name of the project: ${projectName} (from package.json)`
+  )
+
+  return projectName
 }
 
 async function copyRepo (src, dest) {
@@ -262,11 +274,12 @@ module.exports = {
   async handler (argv) {
     try {
       log.options.verbose = argv.verbose
+      log.options.interactive = argv.interactive
 
-      await identifyType()
+      await isProject()
       console.log()
 
-      await showInfo()
+      await getProjectName()
       console.log()
 
       const { imageIdDev, imageIdProd } = await buildImage()

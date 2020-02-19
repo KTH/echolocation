@@ -20,7 +20,9 @@ async function identifyType () {
   }
 
   log.verbose('No package.json found in cwd')
-  log.error('Current directory is not a Node.js project (no package.json found)')
+  log.error(
+    'Current directory is not a Node.js project (no package.json found)'
+  )
 }
 
 async function showInfo () {

@@ -79,13 +79,27 @@ async function copyRepo (src, dest) {
   })
 }
 
-function getNodeVersion () {
+/** Get the Node.js version specified for the current project */
+async function getNodeVersion () {
+  log.verbose('Reading "engine.node" from package.json')
   const p = require(resolveCwd('./package.json'))
-  return (p && p.engine && p.engine.node) || '12'
+  const version = (p && p.engine && p.engine.node) || '12'
+
+  await log.confirm(`Node.js version required is: ${version}`)
+    .then(correct => {
+      if (!correct) {
+        log.error('Failed to guess required Node.js version')
+        process.exit(1)
+      }
+    })
+    .catch(exitAll)
+
+  log.success(`Node.js version required for this project: ${version}`)
+  return version
 }
 
 async function buildImage () {
-  const version = getNodeVersion()
+  const version = await getNodeVersion()
   const dockerfileProd = compile(
     fs.readFileSync(path.join(__dirname, './app-prod/Dockerfile.handlebars'), {
       encoding: 'utf-8'

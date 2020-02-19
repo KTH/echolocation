@@ -2,37 +2,47 @@ const { isCI } = require('ci-info')
 const chalk = require('chalk')
 const ora = require('ora')
 
-let useVerbose = false
+function newLog () {
+  const options = {
+    verbose: false,
+    interactive: false
+  }
 
-const monoConsole = {
-  log: (msg = '') => console.log(msg),
-  verbose: msg => useVerbose && console.log('[ VERBOSE ]', msg),
-  success: msg => console.error('[ SUCCESS ]', msg),
-  warn: msg => console.error('[ WARN ]', msg),
-  error: msg => console.error('[ ERROR ]', msg),
-  tip: msg => {},
+  const monoConsole = {
+    log: (msg = '') => console.log(msg),
+    verbose: msg =>
+      options.verbose && useVerbose && console.log('[ VERBOSE ]', msg),
+    success: msg => console.error('[ SUCCESS ]', msg),
+    warn: msg => console.error('[ WARN ]', msg),
+    error: msg => console.error('[ ERROR ]', msg),
+    tip: msg => {}
+  }
 
-  toggleVerbose: v => {
-    useVerbose = v
-    console.log('verbose logging enabled')
+  const colorConsole = {
+    log: (msg = '') => console.log(msg),
+    verbose: msg => options.verbose && console.log(chalk.gray('verbose'), msg),
+    success: msg => console.log(chalk.green('success'), msg),
+    warn: msg => console.error(chalk.yellow.bold('warning'), msg),
+    error: msg => console.error(chalk.bgRed(' ERROR '), msg),
+    tip: msg => console.log(chalk.cyan.bold('+ TIP:'), msg)
+  }
+
+  const base = isCI ? monoConsole : colorConsole
+
+  return {
+    ...base,
+    options: {
+      set verbose (value) {
+        options.verbose = value
+        base.verbose('Verbose mode enabled')
+      },
+      get verbose () {
+        return options.verbose
+      }
+    }
   }
 }
 
-const colorConsole = {
-  log: (msg = '') => console.log(msg),
-  verbose: msg => useVerbose && console.log(chalk.gray('verbose'), msg),
-  success: msg => console.log(chalk.green('success'), msg),
-  warn: msg => console.error(chalk.yellow.bold('warning'), msg),
-  error: msg => console.error(chalk.bgRed(' ERROR '), msg),
-  tip: msg => console.log(chalk.cyan.bold('+ TIP:'), msg),
-
-  toggleVerbose: v => {
-    useVerbose = v
-    console.log(chalk.gray('verbose'), 'Verbose logging enabled')
-  }
-}
-
-const log = isCI ? monoConsole : colorConsole
 const spinners = []
 
 function exit (err) {
@@ -79,7 +89,7 @@ function newOra (msg) {
 }
 
 module.exports = {
-  log,
+  log: newLog(),
   exit,
   exitAll,
   ora: newOra

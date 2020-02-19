@@ -256,13 +256,7 @@ module.exports = {
       }),
   async handler (argv) {
     try {
-      if (argv.verbose) {
-        log.toggleVerbose(true)
-      }
-
-      if (argv.interactive) {
-        log.verbose('Interactive mode active')
-      }
+      log.options.verbose = argv.verbose
 
       await identifyType()
       console.log()

@@ -1,7 +1,7 @@
-const resolveCwd = require('resolve-cwd')
 const prettyBytes = require('pretty-bytes')
 const path = require('path')
 const { ora, log, exitAll, exit } = require('./utils/cli')
+const { resolveCwd } = require('./utils')
 const docker = require('./utils/docker')
 const tempy = require('tempy')
 const fs = require('fs-extra')
@@ -10,6 +10,18 @@ const { compile } = require('handlebars')
 const chalk = require('chalk')
 
 const BASE_IMAGE = 'kthse/nodejs-echo'
+
+async function identifyType () {
+  if (fs.existsSync(resolveCwd('package.json'))) {
+    log.verbose('Found package.json in cwd')
+    log.success('Project identified as Node.js')
+
+    return true
+  }
+
+  log.verbose('No package.json found in cwd')
+  log.error('Current directory is not a Node.js project (no package.json found)')
+}
 
 async function showInfo () {
   const spinner = ora('Getting docker version').start()
@@ -234,9 +246,25 @@ module.exports = {
         alias: 'i',
         type: 'boolean',
         describe: 'Run in interactive mode (ask yes/no on every step)'
+      })
+      .option('verbose', {
+        alias: 'v',
+        type: 'boolean',
+        describe: 'Show lots of logs'
       }),
   async handler (argv) {
     try {
+      if (argv.verbose) {
+        log.toggleVerbose(true)
+      }
+
+      if (argv.interactive) {
+        log.verbose('Interactive mode active')
+      }
+
+      await identifyType()
+      console.log()
+
       await showInfo()
       process.exit(0)
       console.log()

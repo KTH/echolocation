@@ -2,20 +2,34 @@ const { isCI } = require('ci-info')
 const chalk = require('chalk')
 const ora = require('ora')
 
+let useVerbose = false
+
 const monoConsole = {
-  log: msg => console.log(msg),
+  log: (msg = '') => console.log(msg),
+  verbose: msg => useVerbose && console.log('[ VERBOSE ]', msg),
   success: msg => console.error('[ SUCCESS ]', msg),
   warn: msg => console.error('[ WARN ]', msg),
   error: msg => console.error('[ ERROR ]', msg),
-  tip: msg => {}
+  tip: msg => {},
+
+  toggleVerbose: v => {
+    useVerbose = v
+    console.log('verbose logging enabled')
+  }
 }
 
 const colorConsole = {
-  log: msg => console.log(msg),
+  log: (msg = '') => console.log(msg),
+  verbose: msg => useVerbose && console.log(chalk.gray('verbose'), msg),
   success: msg => console.log(chalk.green('success'), msg),
   warn: msg => console.error(chalk.yellow.bold('warning'), msg),
   error: msg => console.error(chalk.bgRed(' ERROR '), msg),
-  tip: msg => console.log(chalk.cyan.bold('+ TIP:'), msg)
+  tip: msg => console.log(chalk.cyan.bold('+ TIP:'), msg),
+
+  toggleVerbose: v => {
+    useVerbose = v
+    console.log(chalk.gray('verbose'), 'Verbose logging enabled')
+  }
 }
 
 const log = isCI ? monoConsole : colorConsole
